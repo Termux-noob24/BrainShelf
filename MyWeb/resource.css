@@ -1,0 +1,38 @@
+.parent{
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    align-content: center;
+    justify-content: center;   
+    flex-direction: column;
+}
+.child{
+    padding: 20px;
+    margin: auto;
+    width: 1000px;
+    border: 1px solid black;
+}
+h2{
+  text-align: center;
+  margin-bottom: 10px;
+}
+.child input, button{
+    color: aqua;
+    width: fit-content;
+    height: 50px;
+    padding: 20px;
+
+}
+@media screen and (max-width: 1200px) {
+    
+  }
+  
+  @media screen and (max-width: 600px) {
+    
+    .child{
+      height: 250px;
+      width: 400px;
+
+    }
+    
+  }

@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>My Portfolio</title>
+    <link rel="stylesheet" href="style.css" />
+    <link rel="stylesheet" href="mediaqueries.css" />
+    <link rel="stylesheet" href="resource.css" />
+    <script src="script.js"></script>
+  </head>
+  <body>
+    <nav id="desktop-nav">
+      <div style="color: white;" class="logo"><h3 style="color: white;">Brain<span class="high">Shelf </span></span></h3></div>
+      <div>
+        <ul style="height: 9vh;" class="nav-links">
+          <li><a href="index.html">Home</a></li>
+          <li><a href="resource.css">Resources</a></li>
+          <li><a href="#Skill">Support</a></li>
+          <li><a href="#contact">About</a></li>
+        </ul>
+      </div>
+    </nav>
+    <nav id="hamburger-nav">
+        <div style="color: white;" class="logo"><h3 style="color: white;">Brain<span class="high">Shelf </span></span></h3></div>
+      <div class="hamburger-menu">
+        <div class="hamburger-icon" onclick="toggleMenu()">
+          <span></span>
+          <span></span>
+          <span></span>
+        </div>
+        <div class="menu-links">
+          <li><a href="index.html" onclick="toggleMenu()">Home</a></li>
+          <li><a href="resources.html" onclick="toggleMenu()">Resources</a></li>
+          <li><a href="#Skill" onclick="toggleMenu()">Support</a></li>
+          <li><a href="#contact" onclick="toggleMenu()">About</a></li>
+        </div>
+      </div>
+    </nav>
+    <fieldset class="parent">
+        <div class="child">
+            <!-- List of uploaded files with download links -->
+            <h2>Download Files</h2>
+            <ul id="file-list"></ul>
+        </div>
+    </fieldset>
+    <script type="module">
+        // Import the functions you need from the SDKs you need
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.14.0/firebase-app.js";
+        import { getAnalytics } from "https://www.gstatic.com/firebasejs/10.14.0/firebase-analytics.js";
+        // TODO: Add SDKs for Firebase products that you want to use
+        // https://firebase.google.com/docs/web/setup#available-libraries
+      
+        // Your web app's Firebase configuration
+        // For Firebase JS SDK v7.20.0 and later, measurementId is optional
+        const firebaseConfig = {
+          apiKey: "AIzaSyCIdmGm1NlwU9vggPEFFD0-lP47_O552yY",
+          authDomain: "myfirebase-bd961.firebaseapp.com",
+          projectId: "myfirebase-bd961",
+          storageBucket: "myfirebase-bd961.appspot.com",
+          messagingSenderId: "92761096055",
+          appId: "1:92761096055:web:32032300a86c447957eb72",
+          measurementId: "G-WCGSFLPVVC"
+        };
+        
+        const storage = firebaseConfig.storage();
+        const storageRef = storage.ref();
+        // Initialize Firebase
+        const app = initializeApp(firebaseConfig);
+        const analytics = getAnalytics(app);
+
+        // Function to upload a file
+        function uploadFile() {
+            const file = document.getElementById('file-upload').files[0];
+            if (file) {
+                const fileRef = storageRef.child('uploads/' + file.name);
+                fileRef.put(file).then((snapshot) => {
+                    snapshot.ref.getDownloadURL().then((downloadURL) => {
+                        alert('File uploaded successfully!');
+                        listFiles();  // Refresh the file list after upload
+                    });
+                }).catch((error) => {
+                    console.error("Error uploading file: ", error);
+                });
+            } else {
+                alert('No file selected');
+            }
+        }
+
+        // Function to list all files in the 'uploads' directory
+        function listFiles() {
+            const fileListElement = document.getElementById('file-list');
+            fileListElement.innerHTML = '';  // Clear current list
+
+            storageRef.child('uploads/').listAll().then((result) => {
+                result.items.forEach((fileRef) => {
+                    // Get the download URL for each file
+                    fileRef.getDownloadURL().then((downloadURL) => {
+                        // Create a new list item for each file with a download link
+                        const li = document.createElement('li');
+                        const a = document.createElement('a');
+                        a.href = downloadURL;
+                        a.textContent = fileRef.name;
+                        a.setAttribute('download', fileRef.name);  // Optional: Trigger download instead of opening in a new tab
+                        a.target = "_blank";  // Opens in new tab
+                        li.appendChild(a);
+                        fileListElement.appendChild(li);
+                    });
+                });
+            }).catch((error) => {
+                console.error('Error listing files: ', error);
+            });
+        }
+
+        // List the files when the page loads
+        window.onload = listFiles;
+    </script>
+</body>
+</html>
